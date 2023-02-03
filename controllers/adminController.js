@@ -1,6 +1,7 @@
 const ADMIN = require('../modals/adminModal');
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const PASSWORD = require('../modals/passwordModal');
 
 exports.admin = {
     get : async (req,res) => {
@@ -45,13 +46,22 @@ exports.admin = {
           }
           bcrypt.hash(confirmPassword, 10).then(async (hash) => {
               password = hash;
-              const admin = await ADMIN.create({ email, branch, password , schoolId });
+              const admin = await ADMIN.create({ email, branch , schoolId });
+              const passwordInfo = await PASSWORD.create({userId : admin._id , password : password})
 
-              return res.status(200).json({
-                isSuccess : true,
-                message: "Admin created successfully",
-                data: admin,
-              });
+              if(admin && passwordInfo){
+                return res.status(200).json({
+                  isSuccess : true,
+                  message: "Admin created successfully",
+                  data: admin,
+                });
+              }
+              else{
+                return res.status(200).json({
+                  isSuccess : false,
+                  message: "Admin not created!!"
+                });
+              }
             })
             .catch((err) => {
               return res.status(400).json(err);
@@ -68,16 +78,18 @@ exports.admin = {
             email: req.body.email, _id: req.body.branchId , schoolId : req.body.schoolId
           });
           // if(adminInfo.schoolId !== req.body.schoolId){
-          //   console.log(req.body)
-
-          // }
+            //   console.log(req.body)
+            
+            // }
           if (!adminInfo) {
             return res.json({
               isSuccess : false,
               message: "Email not found!",
             })
           }
-          if (!bcrypt.compareSync(req.body.password, adminInfo.password)) {
+
+          let passwordInfo = await PASSWORD.findOne({userId : req.body.branchId})
+          if (!bcrypt.compareSync(req.body.password, passwordInfo.password)) {
             return  res.json({
               isSuccess : false,
               message: "Authentication failed. Wrong password.",
@@ -122,13 +134,14 @@ exports.admin = {
           }
           jwt.verify(token, process.env.TOKEN_KEY, async function (err, decoded) {
             let userAdmin = await ADMIN.findOne({ _id : decoded.branchId})
+            let userPassword = await PASSWORD.findOne({ userId : decoded.branchId})
             if (!userAdmin) {
               return res.json({
                 isSuccess : false,
                 message: "User not found!",
               })
             }
-            if (!bcrypt.compareSync(req.body.password, userAdmin.password)) {
+            if (!bcrypt.compareSync(req.body.password, userPassword.password)) {
               return  res.json({
                 isSuccess : false,
                 message: "Authentication failed. Wrong password.",

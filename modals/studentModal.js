@@ -68,11 +68,6 @@ let studentSchema = new mongoose.Schema(
             match: /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/,
             trim: true
         },
-        password : {
-            type: String,
-            required: true,
-            trim: true
-        },
         adminId:{
             type:String,
             trim:true,
