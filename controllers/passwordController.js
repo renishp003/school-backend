@@ -6,13 +6,11 @@ exports.password = {
     get : async (req,res) => {
         try {
             const record = await PASSWORD.find({});
-            if(school){
                 return res.status(200).json({
                     isSuccess : true,
                     message: "All password data",
                     data : record
                 });
-            }
           } catch (error) {
             return res.json({isSuccess : false , message : 'Request Faild!'});
           }
