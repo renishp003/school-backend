@@ -160,7 +160,6 @@ exports.student = {
           }
           jwt.verify(token, process.env.TOKEN_KEY, async function (err, decoded) {
 
-            console.log(studentInfo.adminId , decoded.admin_id)
             if(studentInfo.adminId == decoded.admin_id){
               let student  = await STUDENT.findOneAndUpdate(
                 { _id: req.query.id },
@@ -183,7 +182,6 @@ exports.student = {
                   }
                 },
               )
-              console.log(student)
             return res.status(200).json({
               isSuccess : true,
               message: "Student Update successfully",

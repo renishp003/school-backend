@@ -47,7 +47,7 @@ exports.admin = {
           bcrypt.hash(confirmPassword, 10).then(async (hash) => {
               password = hash;
               const admin = await ADMIN.create({ email, branch , schoolId });
-              const passwordInfo = await PASSWORD.create({userId : admin._id , password : password})
+              const passwordInfo = await PASSWORD.create({userId : admin._id , password : password , userRoll : 'branch'})
 
               if(admin && passwordInfo){
                 return res.status(200).json({
