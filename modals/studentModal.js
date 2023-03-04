@@ -68,7 +68,7 @@ let studentSchema = new mongoose.Schema(
             match: /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/,
             trim: true
         },
-        adminId:{
+        branchId:{
             type:String,
             trim:true,
             require:true

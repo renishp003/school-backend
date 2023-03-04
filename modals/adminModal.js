@@ -14,11 +14,6 @@ let adminSchema = new mongoose.Schema(
             type : String,
             require: true,
             trim: true
-        },
-        schoolId : {
-            type: String,
-            required: true,
-            trim: true
         }
     },
     {
